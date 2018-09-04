@@ -1167,6 +1167,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../EffectiveCpp/3 资源管理/条款17：以独立语句将 newed 对象置入智能指针/" title="条款17：以独立语句将 newed 对象置入智能指针" class="md-nav__link">
+      条款17：以独立语句将 newed 对象置入智能指针
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1464,6 +1476,18 @@
 
 
 <p>如果在new和delete之间发生了异常，且异常未在f中被捕获，则内存就永远不会被释放了。</p>
+<p><strong>使用我们自己的释放操作</strong></p>
+<p>这里给一个简单的定义删除器的例子，而具体的讨论见书本p416。</p>
+<div class="codehilite"><pre><span></span><span class="k">auto</span> <span class="n">deleter</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span><span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>   
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;delete data: &quot;</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">};</span>  
+
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">42</span><span class="p">),</span> <span class="n">deleter</span><span class="p">);</span>
+</pre></div>
+
+
 <h3 id="unique_ptr">unique_ptr</h3>
 <p>与shared_ptr不同，某个时刻只能有一个unique_ptr指向一个给定对象。当unique_ptr被销毁时，它所指向的对象也被销毁。</p>
 <p>与shared_ptr不同，没有类似make_shared的标准库函数返回一个unique_ptr。当我们定义一个unique_ptr时，需要将其绑定到一个new返回的指针上。</p>
