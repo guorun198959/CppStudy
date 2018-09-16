@@ -38,7 +38,7 @@
     
     
       
-        <title>条款18：让接口容易被正确使用，不易被误用 - C++ Study Note</title>
+        <title>条款21：必须返回对象时，别妄想返回其 reference - C++ Study Note</title>
       
     
     
@@ -100,7 +100,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../../../#18" tabindex="1" class="md-skip">
+      <a href="../../../#21-reference" tabindex="1" class="md-skip">
         跳转至
       </a>
     
@@ -126,7 +126,7 @@
                 C++ Study Note
               </span>
               <span class="md-header-nav__topic">
-                条款18：让接口容易被正确使用，不易被误用
+                条款21：必须返回对象时，别妄想返回其 reference
               </span>
             
           
@@ -1178,56 +1178,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        条款18：让接口容易被正确使用，不易被误用
-      </label>
-    
-    <a href="./" title="条款18：让接口容易被正确使用，不易被误用" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../条款18：让接口容易被正确使用，不易被误用/" title="条款18：让接口容易被正确使用，不易被误用" class="md-nav__link">
       条款18：让接口容易被正确使用，不易被误用
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">目录</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" title="使用类型系统" class="md-nav__link">
-    使用类型系统
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" title="其他" class="md-nav__link">
-    其他
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -1259,11 +1214,20 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../条款21：必须返回对象时，别妄想返回其 reference/" title="条款21：必须返回对象时，别妄想返回其 reference" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="条款21：必须返回对象时，别妄想返回其 reference" class="md-nav__link md-nav__link--active">
       条款21：必须返回对象时，别妄想返回其 reference
     </a>
+    
   </li>
 
         
@@ -1294,29 +1258,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">目录</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_1" title="使用类型系统" class="md-nav__link">
-    使用类型系统
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_2" title="其他" class="md-nav__link">
-    其他
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1327,84 +1268,80 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/demon90s/CppStudy/tree/master/study_notes/EffectiveCpp/4 设计与声明/条款18：让接口容易被正确使用，不易被误用.md" title="编辑此页" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/demon90s/CppStudy/tree/master/study_notes/EffectiveCpp/4 设计与声明/条款21：必须返回对象时，别妄想返回其 reference.md" title="编辑此页" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="18">条款18：让接口容易被正确使用，不易被误用</h1>
+                <h1 id="21-reference">条款21：必须返回对象时，别妄想返回其 reference</h1>
+<p>如果传递一些 references 指向其实并不存在的对象，就是一个致命的错误。</p>
 <hr />
-<p>理想上，如果客户企图使用某个接口而却没有获得他预期的行为，这个代码不该通过编译；如果代码通过了编译，它的作为就该是客户所想要的。</p>
-<p>欲开发一个“容易被使用，不容易被误用”的接口，首先必须考虑客户可能做出什么样的错误。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>在实际开发中，我更多的是去检查参数的取值范围是否合法，不合法就直接返回。</p>
-</div>
-<h2 id="_1">使用类型系统</h2>
-<p>以下例子说明了一个错误范例：</p>
-<div class="codehilite"><pre><span></span><span class="c1">// 这个类型的接口可能会被误用，籍由传入错误的参数， int 无法识别参数的实际类型</span>
-<span class="k">class</span> <span class="nc">Date1</span> <span class="p">{</span>
+<p>以这个类型作为说明：</p>
+<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Rational</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
-    <span class="n">Date1</span><span class="p">(</span><span class="kt">int</span> <span class="n">month</span><span class="p">,</span> <span class="kt">int</span> <span class="n">day</span><span class="p">,</span> <span class="kt">int</span> <span class="n">year</span><span class="p">)</span> <span class="o">:</span> <span class="n">month_</span><span class="p">(</span><span class="n">month</span><span class="p">),</span> <span class="n">day_</span><span class="p">(</span><span class="n">day</span><span class="p">),</span> <span class="n">year_</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">Rational</span><span class="p">(</span><span class="kt">int</span> <span class="n">numerator</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int</span> <span class="n">denominator</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">numerator</span><span class="p">),</span> <span class="n">d</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span> <span class="p">{}</span>
 
 <span class="k">private</span><span class="o">:</span>
-    <span class="kt">int</span> <span class="n">month_</span><span class="p">,</span> <span class="n">day_</span><span class="p">,</span> <span class="n">year_</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+
+    <span class="k">friend</span> <span class="k">const</span> <span class="n">Rational</span> <span class="k">operator</span><span class="o">*</span> <span class="p">(</span><span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Rational</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="n">Date1</span> <span class="nf">d</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1995</span><span class="p">);</span>   <span class="c1">// 错了，第一个参数是月份！但仍然通过了编译</span>
-<span class="n">Date1</span> <span class="nf">d2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1995</span><span class="p">);</span>  <span class="c1">// 错了，2月份没有30天</span>
+<span class="c1">// 这里应该返回一个值，而不是 reference</span>
+<span class="kr">inline</span> <span class="k">const</span> <span class="n">Rational</span> <span class="k">operator</span><span class="o">*</span> <span class="p">(</span><span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Rational</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">Rational</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">lhs</span><span class="p">.</span><span class="n">d</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">d</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<p>我们使用类型系统（ type system ）来解决这个问题。具体的方法是：</p>
-<div class="codehilite"><pre><span></span><span class="c1">// 使用类型系统</span>
-<span class="k">struct</span> <span class="n">Day</span> <span class="p">{</span>
-    <span class="k">explicit</span> <span class="n">Day</span><span class="p">(</span><span class="kt">int</span> <span class="n">d</span><span class="p">)</span> <span class="o">:</span> <span class="n">val</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="p">{}</span>
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">Month</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="k">static</span> <span class="n">Month</span> <span class="n">Jan</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Month</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// 以函数替换对象，表现某个特定月份</span>
-    <span class="k">static</span> <span class="n">Month</span> <span class="n">Feb</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Month</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="p">}</span>
-    <span class="c1">//...</span>
-    <span class="k">static</span> <span class="n">Month</span> <span class="n">Dec</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Month</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span> <span class="p">}</span>
-<span class="k">private</span><span class="o">:</span>
-    <span class="k">explicit</span> <span class="n">Month</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="p">)</span> <span class="o">:</span> <span class="n">val</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="p">{}</span>       <span class="c1">// 阻止生成新的月份</span>
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">struct</span> <span class="n">Year</span> <span class="p">{</span>
-    <span class="k">explicit</span> <span class="n">Year</span><span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="o">:</span> <span class="n">val</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">{}</span>
-    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="k">class</span> <span class="nc">Date2</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="n">Date2</span><span class="p">(</span><span class="k">const</span> <span class="n">Month</span><span class="o">&amp;</span> <span class="n">m</span><span class="p">,</span> <span class="k">const</span> <span class="n">Day</span><span class="o">&amp;</span> <span class="n">d</span><span class="p">,</span> <span class="k">const</span> <span class="n">Year</span><span class="o">&amp;</span> <span class="n">y</span><span class="p">)</span> <span class="o">:</span> <span class="n">month_</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">day_</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">year_</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">{}</span>
-
-<span class="k">private</span><span class="o">:</span>
-    <span class="n">Month</span> <span class="n">month_</span><span class="p">;</span>
-    <span class="n">Day</span> <span class="n">day_</span><span class="p">;</span>
-    <span class="n">Year</span> <span class="n">year_</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="c1">//Date2 d(30, 3, 1995); // 错误！类型不对，无法通过编译</span>
-<span class="n">Date2</span> <span class="nf">d</span><span class="p">(</span><span class="n">Month</span><span class="o">::</span><span class="n">Feb</span><span class="p">(),</span> <span class="n">Day</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">Year</span><span class="p">(</span><span class="mi">1995</span><span class="p">));</span> <span class="c1">// OK ，类型正确</span>
+<p>可能会想把乘法运算的返回值设置成引用，从而避免拷贝带来的开销。那么可能会想几个办法。</p>
+<div class="codehilite"><pre><span></span><span class="c1">// 错误的方式，返回了 stack 对象，函数返回后已经不存在了</span>
+<span class="kr">inline</span> <span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span> <span class="p">(</span><span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Rational</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Rational</span> <span class="n">res</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">lhs</span><span class="p">.</span><span class="n">d</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">d</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<p>这里 Month 还使用了以函数替换对象的方法，限定了其取值的范围。</p>
-<h2 id="_2">其他</h2>
-<p>预防客户错误的另一个方法是，限制类型内什么事可做，什么事不能做。比如加上 const 。</p>
-<p>另一个一般性准则是：除非有好理由，否则应该尽量令你的 types 的行为与内置 types 一致。</p>
-<p>任何接口如果要求客户必须记得做某些事情，就是有着“不正确使用”的倾向，因为客户可能会忘记做那件事。书本以 Investment 资源为例，推荐使用 shared_ptr 对其进行管理。这样用户就不必考虑其释放的问题了。</p>
+<p>应该拒绝这种做法，因为它是错误的，而且为了避免拷贝构造，实际上还是做了一次拷贝构造，这没有意义。</p>
+<div class="codehilite"><pre><span></span><span class="c1">// 更加错误的写法，很可能内存泄漏，而且没有意义</span>
+<span class="kr">inline</span> <span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span> <span class="p">(</span><span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Rational</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Rational</span> <span class="n">res</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rational</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">lhs</span><span class="p">.</span><span class="n">d</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">d</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>上述做法很可能造成内存泄漏：</p>
+<div class="codehilite"><pre><span></span><span class="n">Rational</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">;</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">z</span><span class="p">;</span>
+</pre></div>
+
+
+<p>另一种做法是返回一个 local static 对象：</p>
+<div class="codehilite"><pre><span></span><span class="kr">inline</span> <span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span> <span class="p">(</span><span class="k">const</span> <span class="n">Rational</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Rational</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">Rational</span> <span class="n">res</span><span class="p">;</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">n</span><span class="p">;</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">lhs</span><span class="p">.</span><span class="n">d</span> <span class="o">*</span> <span class="n">rhs</span><span class="p">.</span><span class="n">d</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>就像所有用上 static 对象的设计一样，这一个也立刻造成我们对多线程安全性的疑虑。就算没有多线程，这样做仍然会出问题：</p>
+<div class="codehilite"><pre><span></span><span class="n">Rational</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">==</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="p">{}</span>
+<span class="k">else</span> <span class="p">{}</span>
+</pre></div>
+
+
+<p>表达式 <code>(a * b == c * d)</code> 将总是得到 true 。因为它们返回的是同一个对象。</p>
+<p>别忘了，C++允许编译器实现者施行最优化，用以改善产出码的效率却不改变其可观察的行为。因此某些情况下， <code>operator*</code>返回值的构造和析构可被安全地消除。如果编译器运用这一事实（它们也往往如此），你的程序将继续保持它们该有的行为，而执行起来又比预期的更快。</p>
 <div class="admonition tip">
 <p class="admonition-title">请记住</p>
-<ul>
-<li>好的接口很容易被正确使用，不容易被误用。你应该在你的所有接口中努力达成这些性质。</li>
-<li>“促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容。</li>
-<li>“阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任。</li>
-<li>shared_ptr 支持定制型删除去（ custom deleter ）。这可防范 DLL 问题，可被用来自动解除互斥锁（ mutexes ）等等。</li>
-</ul>
+<p>绝不要返回 pointer 或 reference 指向一个 local stack 对象，或返回 reference 指向一个 heap-allocated 对象，或返回 pointer 或 reference 指向一个 local static 对象而有可能同时需要多个这样的对象。</p>
 </div>
                 
                   
@@ -1426,7 +1363,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../3 资源管理/条款17：以独立语句将 newed 对象置入智能指针/" title="条款17：以独立语句将 newed 对象置入智能指针" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../条款20：宁以 pass-by-reference-to-const 替换 pass-by-value/" title="条款20：宁以 pass-by-reference-to-const 替换 pass-by-value" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1435,25 +1372,11 @@
                 <span class="md-footer-nav__direction">
                   后退
                 </span>
-                条款17：以独立语句将 newed 对象置入智能指针
+                条款20：宁以 pass-by-reference-to-const 替换 pass-by-value
               </span>
             </div>
           </a>
         
-        
-          <a href="../条款19：设计 class 犹如设计 type/" title="条款19：设计 class 犹如设计 type" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  前进
-                </span>
-                条款19：设计 class 犹如设计 type
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
         
       </nav>
     </div>
